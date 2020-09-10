@@ -4,6 +4,7 @@ from collections import OrderedDict
 import cv2
 import numpy as np
 import torch
+from torch.utils import model_zoo
 from torchvision import transforms
 
 from . import networks
@@ -16,20 +17,20 @@ DATASET_SETTINGS = {
         'labels': ['Background', 'Hat', 'Hair', 'Glove', 'Sunglasses', 'Upper-clothes', 'Dress', 'Coat',
                   'Socks', 'Pants', 'Jumpsuits', 'Scarf', 'Skirt', 'Face', 'Left-arm', 'Right-arm',
                   'Left-leg', 'Right-leg', 'Left-shoe', 'Right-shoe'],
-        'ckpt': 'exp-schp-201908261155-lip.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-parser/releases/download/0.0.1/exp-schp-201908261155-lip.pth'
     },
     'atr': {
         'input_size': [512, 512],
         'num_classes': 18,
         'labels': ['Background', 'Hat', 'Hair', 'Sunglasses', 'Upper-clothes', 'Skirt', 'Pants', 'Dress', 'Belt',
                   'Left-shoe', 'Right-shoe', 'Face', 'Left-leg', 'Right-leg', 'Left-arm', 'Right-arm', 'Bag', 'Scarf'],
-        'ckpt': 'exp-schp-201908301523-atr.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-parser/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
     },
     'pascal': {
         'input_size': [512, 512],
         'num_classes': 7,
         'labels': ['Background', 'Head', 'Torso', 'Upper Arms', 'Lower Arms', 'Upper Legs', 'Lower Legs'],
-        'ckpt': 'exp-schp-201908270938-pascal-person-part.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-parser/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
     }
 }
 
@@ -83,26 +84,24 @@ class ImagePreprocessor:
 
 
 class HumanParser:
-    def __init__(self, dataset='lip', ckpt_dir='checkpoints', gpu='0'):
+    def __init__(self, dataset='lip', gpu='0'):
         # Input arguments
         self.dataset = dataset
-        self.ckpt_dir = ckpt_dir
         self.gpu = gpu
         self.device = torch.device('cuda:{}'.format(gpu))
 
         # Dataset Setting
         self.num_classes = DATASET_SETTINGS[self.dataset]['num_classes']
         self.input_size = DATASET_SETTINGS[self.dataset]['input_size']
+        self.ckpt_path = DATASET_SETTINGS[self.dataset]['ckpt']
         self.labels = DATASET_SETTINGS[self.dataset]['labels']
         self.label_mapping = dict([(label, label_index) \
             for label_index, label in enumerate(self.labels)])
-        self.ckpt_path = os.path.join(self.ckpt_dir,
-            DATASET_SETTINGS[self.dataset]['ckpt'])
 
         # Load Model
         self.model = networks.init_model('resnet101',
             num_classes=self.num_classes, pretrained=None)
-        state_dict = torch.load(self.ckpt_path)['state_dict']
+        state_dict = model_zoo.load_url(self.ckpt_path)['state_dict']
         new_state_dict = OrderedDict()
         for k, v in state_dict.items():
             name = k[7:]  # remove `module.`
