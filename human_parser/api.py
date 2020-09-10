@@ -88,6 +88,7 @@ class HumanParser:
         self.dataset = dataset
         self.ckpt_dir = ckpt_dir
         self.gpu = gpu
+        self.device = torch.device('cuda:{}'.format(gpu))
 
         # Dataset Setting
         self.num_classes = DATASET_SETTINGS[self.dataset]['num_classes']
@@ -107,7 +108,7 @@ class HumanParser:
             name = k[7:]  # remove `module.`
             new_state_dict[name] = v
         self.model.load_state_dict(new_state_dict)
-        self.model.cuda()
+        self.model.to(self.device)
         self.model.eval()
 
         # Image Preprocessor
@@ -133,7 +134,7 @@ class HumanParser:
         h = meta['height']
 
         image = image.unsqueeze(0)
-        output = self.model(image.cuda())
+        output = self.model(image.to(self.device))
         upsample = torch.nn.Upsample(
             size=self.input_size, mode='bilinear', align_corners=True)
         upsample_output = upsample(output[0][-1][0].unsqueeze(0))
