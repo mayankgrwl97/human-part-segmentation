@@ -1,1 +1,1 @@
-from .api import HumanParser
+from .api import HumanPartSegmentation

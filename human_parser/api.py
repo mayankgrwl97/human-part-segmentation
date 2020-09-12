@@ -10,6 +10,7 @@ from torchvision import transforms
 from . import networks
 from .utils.transforms import get_affine_transform, transform_logits
 
+
 DATASET_SETTINGS = {
     'lip': {
         'input_size': [473, 473],
@@ -83,7 +84,7 @@ class ImagePreprocessor:
         return input, meta
 
 
-class HumanParser:
+class HumanPartSegmentation:
     def __init__(self, dataset='lip', gpu='0'):
         # Input arguments
         self.dataset = dataset
@@ -118,13 +119,14 @@ class HumanParser:
         self.image_preprocessor = ImagePreprocessor(
             input_size=self.input_size, transform=self.transform)
 
-    def get_pixelwise_labels(self, img_path):
-        '''
-        This function returns pixelwise label index for input image.
-        See DATASET_SETTINGS for more information on
-        label_index -> label mapping
+    def get_pixel_labels(self, img_path):
+        """
+        Get pixel-wise label predictions.
 
-        '''
+        Args:
+            img_path (str): Path to Image
+        """
+
         image, meta = self.image_preprocessor.process(img_path)
 
         c = meta['center']
@@ -144,18 +146,31 @@ class HumanParser:
             upsample_output.data.cpu().numpy(), c, s, w, h,
             input_size=self.input_size)
 
-        pixelwise_labels = np.argmax(logits_result, axis=2)
+        pixel_labels = np.argmax(logits_result, axis=2)
 
-        return pixelwise_labels
+        return pixel_labels
 
-    def get_label_mask(self, img_path, fg_labels):
-        pixelwise_labels = self.get_pixelwise_labels(img_path)
-        fg_label_indices = [self.label_mapping[fg_label] for fg_label in fg_labels]
+    def get_part_mask(self, img_path, part_labels):
+        """
+        Get segmentation mask for pixels corresponding to desired part labels
 
-        pixelwise_labels_arr = np.expand_dims(pixelwise_labels, -1) # H x W x 1
-        fg_label_arr = np.unique(fg_label_indices).reshape(1, 1, -1) # 1 x 1 x NUM_FG_LABELS
+        Args:
+            img_path (str): Path to Image
+            part_labels (list): List of part labels
+        """
 
-        fg_pixels = np.any(pixelwise_labels_arr == fg_label_arr, axis=-1) # H X W, 'True' where pixel belongs to foreground
-        fg_mask = fg_pixels.astype(np.uint8) * 255
+        # predicted label indices for each pixel
+        pixel_labels = self.get_pixel_labels(img_path)
 
-        return fg_mask
+        # label_indices[label] --> index of particular label
+        part_label_indices = \
+            [self.label_mapping[part_label] for part_label in part_labels]
+
+        # compare predicted labels with desired labels
+        pixel_labels_arr = np.expand_dims(pixel_labels, -1) # H x W x 1
+        part_label_arr = np.unique(part_label_indices).reshape(1, 1, -1) # 1 x 1 x NUM_LABELS
+        matching_pixels = np.any(pixel_labels_arr == part_label_arr, axis=-1) # H X W
+
+        part_segmentation_mask = matching_pixels.astype(np.uint8) * 255
+
+        return part_segmentation_mask
