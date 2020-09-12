@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name="human-parser",
+    name="human-part-segmentation",
     version="1.0",
     author="Mayank Agarwal",
     author_email="mayankgrwl97@gmail.com",
