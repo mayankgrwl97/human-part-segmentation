@@ -1,2 +1,3 @@
-# human-parser
-The remake of https://github.com/PeikeLi/Self-Correction-Human-Parsing
+# Human-Part-Segmentation
+
+This code is adapted from --> https://github.com/PeikeLi/Self-Correction-Human-Parsing
