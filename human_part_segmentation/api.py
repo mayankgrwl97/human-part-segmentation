@@ -18,20 +18,20 @@ DATASET_SETTINGS = {
         'labels': ['Background', 'Hat', 'Hair', 'Glove', 'Sunglasses', 'Upper-clothes', 'Dress', 'Coat',
                   'Socks', 'Pants', 'Jumpsuits', 'Scarf', 'Skirt', 'Face', 'Left-arm', 'Right-arm',
                   'Left-leg', 'Right-leg', 'Left-shoe', 'Right-shoe'],
-        'ckpt': 'https://github.com/mayankgrwl97/human-parser/releases/download/0.0.1/exp-schp-201908261155-lip.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-part-segmentation/releases/download/0.0.1/exp-schp-201908261155-lip.pth'
     },
     'atr': {
         'input_size': [512, 512],
         'num_classes': 18,
         'labels': ['Background', 'Hat', 'Hair', 'Sunglasses', 'Upper-clothes', 'Skirt', 'Pants', 'Dress', 'Belt',
                   'Left-shoe', 'Right-shoe', 'Face', 'Left-leg', 'Right-leg', 'Left-arm', 'Right-arm', 'Bag', 'Scarf'],
-        'ckpt': 'https://github.com/mayankgrwl97/human-parser/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-part-segmentation/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
     },
     'pascal': {
         'input_size': [512, 512],
         'num_classes': 7,
         'labels': ['Background', 'Head', 'Torso', 'Upper Arms', 'Lower Arms', 'Upper Legs', 'Lower Legs'],
-        'ckpt': 'https://github.com/mayankgrwl97/human-parser/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-part-segmentation/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
     }
 }
 
