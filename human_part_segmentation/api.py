@@ -25,7 +25,7 @@ DATASET_SETTINGS = {
         'num_classes': 18,
         'labels': ['Background', 'Hat', 'Hair', 'Sunglasses', 'Upper-clothes', 'Skirt', 'Pants', 'Dress', 'Belt',
                   'Left-shoe', 'Right-shoe', 'Face', 'Left-leg', 'Right-leg', 'Left-arm', 'Right-arm', 'Bag', 'Scarf'],
-        'ckpt': 'https://github.com/mayankgrwl97/human-part-segmentation/releases/download/0.0.1/exp-schp-201908270938-pascal-person-part.pth'
+        'ckpt': 'https://github.com/mayankgrwl97/human-part-segmentation/releases/download/0.0.1/exp-schp-201908301523-atr.pth'
     },
     'pascal': {
         'input_size': [512, 512],
